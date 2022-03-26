@@ -10,7 +10,7 @@
 
 <script>
 import { ref } from "vue";
-import { auth } from "../firebase/db";
+import { auth, provider } from "../firebase/db";
 import { useRouter } from "vue-router";
 export default {
   setup() {
@@ -30,7 +30,14 @@ export default {
           alert(error.message);
         });
     };
-    const signInWithGoogle = () => {};
+    const signInWithGoogle = () => {
+      auth
+        .signInWithPopup(provider)
+        .then((result) => {
+          router.push("/todos");
+        })
+        .catch((error) => {});
+    };
 
     return { email, password, register, signInWithGoogle };
   },
