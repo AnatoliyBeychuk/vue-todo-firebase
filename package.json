@@ -1,0 +1,19 @@
+{
+  "name": "vue-todo-firebase",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "firebase": "^9.6.9",
+    "nanoid": "^3.3.1",
+    "vue": "^3.0.4",
+    "vue-router": "^4.0.14",
+    "vuefire": "^2.2.5"
+  },
+  "devDependencies": {
+    "vite": "^1.0.0-rc.13",
+    "@vue/compiler-sfc": "^3.0.4"
+  }
+}
