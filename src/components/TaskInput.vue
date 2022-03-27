@@ -1,32 +1,45 @@
 <template>
-  <div class="task-input grid-style">
-    <input v-model="refTitle" placeholder="Title" type="text" maxlength="40" />
-    <input
+  <div class="flex flex-col justify-center items-center h-60 border-2">
+    <todo-input
+      class="m-2"
+      v-model="refTitle"
+      placeholder="Title"
+      maxlength="40"
+    ></todo-input>
+    <todo-input
+      class="m-2"
       v-model="refDescription"
       placeholder="Description"
-      type="text"
       maxlength="80"
-    />
-    <button @click="onAddTask">{{ refTodo ? "Update" : "Add task" }}</button>
+    ></todo-input>
+    <button
+      class="w-48 rounded-lg bg-green-500 text-white p-2 uppercase m-3 hover:bg-green-600"
+      @click="onAddTask"
+    >
+      {{ refTodo ? "Update" : "Add" }}
+    </button>
   </div>
 </template>
 
 <script>
 import { ref, onMounted } from "vue";
+import TodoInput from "./UI/TodoInput.vue";
+import { removeParams, loadParams, saveParams } from "../utils/Utils";
 
 export default {
+  components: { TodoInput },
+  props: {
+    id: String,
+    title: String,
+    description: String,
+    todo: String,
+  },
   //emits валидация не работает, пока не разобрался в чем дело
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     const refId = ref("");
     const refTitle = ref("");
     const refDescription = ref("");
     const refTodo = ref("");
-
-    const loadParams = (key, ref) => {
-      if (localStorage.getItem(key)) {
-        ref.value = localStorage.getItem(key);
-      }
-    };
 
     const onAddTask = () => {
       if (!refTitle.value || !refDescription.value) {
@@ -41,9 +54,19 @@ export default {
       });
       refTitle.value = "";
       refDescription.value = "";
+      removeParams("id");
+      removeParams("title");
+      removeParams("description");
+      removeParams("todo");
     };
 
     onMounted(() => {
+      if (props.title) {
+        saveParams("id", props.id);
+        saveParams("title", props.title);
+        saveParams("description", props.description);
+        saveParams("todo", props.todo);
+      }
       loadParams("id", refId);
       loadParams("title", refTitle);
       loadParams("description", refDescription);
@@ -54,8 +77,4 @@ export default {
   },
 };
 </script>
-<style scoped>
-.task-input {
-  margin: 10px 0;
-}
-</style>
+<style scoped></style>

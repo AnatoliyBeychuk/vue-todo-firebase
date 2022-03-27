@@ -1,5 +1,5 @@
 <template>
-  <ul class="task-list grid-style">
+  <ul>
     <li v-for="task in list" :key="task.id">
       <task-card
         @done="setDoneTask(task.id)"
@@ -20,6 +20,7 @@ import {
   getTaskById,
 } from "../firebase/db-service";
 import { useRouter } from "vue-router";
+import { removeParams } from "../utils/Utils";
 
 export default {
   components: { TaskCard },
@@ -44,6 +45,10 @@ export default {
           description: task.description,
         },
       });
+      removeParams("id");
+      removeParams("title");
+      removeParams("description");
+      removeParams("todo");
     };
 
     const setDoneTask = async (id) => {

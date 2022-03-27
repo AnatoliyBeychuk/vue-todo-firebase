@@ -1,17 +1,24 @@
 <template>
-  <div class="task-card border-style">
-    <div class="task-content">
-      <h4 :class="{ finished: model.status, blur: model.status }">
+  <div
+    class="flex border-2 rounded-lg shadow-lg m-2 p-3 hover:translate-x-2 transition-transform delay-150"
+  >
+    <div class="w-11/12">
+      <h4
+        class="bold break-words"
+        :class="{ 'text-gray-300 line-through': model.status }"
+      >
         {{ model.title }}
       </h4>
-      <p class="description" :class="{ blur: model.status }">
+      <p class="break-words" :class="{ 'text-gray-300': model.status }">
         {{ model.description }}
       </p>
-      <p :class="{ blur: model.status }">{{ model.date }}</p>
+      <p class="border-t-2 w-auto" :class="{ 'text-gray-300': model.status }">
+        {{ model.date }}
+      </p>
     </div>
-    <div>
-      <button @click="emitOnEdit" v-if="!model.status">✏️</button>
+    <div class="flex flex-col justify-between items-end w-1/6 h-auto">
       <button @click="emitOnDone" v-if="!model.status">✅</button>
+      <button @click="emitOnEdit" v-if="!model.status">✏️</button>
       <button @click="emitOnRemove" v-else>❌</button>
     </div>
   </div>
@@ -47,27 +54,4 @@ export default {
   },
 };
 </script>
-<style scoped>
-.task-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.task-content {
-  max-width: 385px;
-}
-
-.description {
-  word-break: break-all;
-}
-
-.finished {
-  text-decoration: line-through;
-  text-decoration-color: tomato;
-}
-
-.blur {
-  color: lightsteelblue;
-}
-</style>
+<style scoped></style>

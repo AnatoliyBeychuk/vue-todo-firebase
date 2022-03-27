@@ -5,8 +5,20 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/", component: () => import("../pages/HomePage.vue") },
-    { path: "/register", component: () => import("../pages/RegisterPage.vue") },
-    { path: "/sign-in", component: () => import("../pages/SingInPage.vue") },
+    {
+      path: "/register",
+      component: () => import("../pages/RegisterPage.vue"),
+      meta: {
+        isLoggined: true,
+      },
+    },
+    {
+      path: "/sign-in",
+      component: () => import("../pages/SingInPage.vue"),
+      meta: {
+        isLoggined: true,
+      },
+    },
     {
       path: "/todos",
       component: () => import("../pages/TodosPage.vue"),
@@ -19,12 +31,18 @@ const router = createRouter({
       path: "/todos/update/:id",
       props: true,
       component: () => import("../pages/TaskDetailPage.vue"),
+      meta: {
+        requiresAuth: true,
+      },
     },
     {
       name: "create",
       path: "/todos/create",
       props: true,
       component: () => import("../pages/TaskDetailPage.vue"),
+      meta: {
+        requiresAuth: true,
+      },
     },
   ],
 });
@@ -45,6 +63,19 @@ router.beforeEach(async (to, from, next) => {
     } else {
       alert("You dont have access!");
       next("/");
+    }
+  } else {
+    next();
+  }
+});
+
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some((record) => record.meta.isLoggined)) {
+    if (await getCurrentUser()) {
+      alert("You are already logged in!");
+      next("/");
+    } else {
+      next();
     }
   } else {
     next();
