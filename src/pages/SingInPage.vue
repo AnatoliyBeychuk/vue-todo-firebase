@@ -13,7 +13,6 @@
       placeholder="Password"
       v-model="password"
     />
-    <p v-if="errorMessage">{{ errorMessage }}</p>
     <button
       class="w-48 rounded-lg bg-green-500 text-white p-2 uppercase m-3 hover:bg-green-600"
       @click="login"
@@ -57,14 +56,15 @@
 </template>
 
 <script>
+import { inject } from "vue";
 import { ref } from "vue";
 import { auth, provider } from "../firebase/db";
 import { useRouter } from "vue-router";
 export default {
   setup() {
+    const emitter = inject("emitter");
     const email = ref("");
     const password = ref("");
-    const errorMessage = ref("");
     const router = useRouter();
 
     const login = () => {
@@ -78,16 +78,16 @@ export default {
           console.log(error.code);
           switch (error.code) {
             case "auth/invalid-email":
-              errorMessage.value = "Invalid email";
+              emitter.emit("toast", "Invalid email");
               break;
             case "auth/user-not-found":
-              errorMessage.value = "No account with that email was found";
+              emitter.emit("toast", "No account with that email was found");
               break;
             case "auth/wrong-password":
-              errorMessage.value = "Incorrect password";
+              emitter.emit("toast", "Incorrect password");
               break;
             default:
-              errorMessage.value = "Email or password was incorrect";
+              emitter.emit("toast", "Email or password was incorrect");
               break;
           }
         });
@@ -101,7 +101,7 @@ export default {
         .catch((error) => {});
     };
 
-    return { email, password, errorMessage, login, signInWithGoogle };
+    return { email, password, login, signInWithGoogle };
   },
 };
 </script>

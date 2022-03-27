@@ -22,9 +22,10 @@
 </template>
 
 <script>
+import { inject } from "vue";
 import { ref, onMounted } from "vue";
 import TodoInput from "./UI/TodoInput.vue";
-import { removeParams, loadParams, saveParams } from "../utils/Utils";
+import { loadParams, saveParams } from "../utils/Utils";
 
 export default {
   components: { TodoInput },
@@ -36,6 +37,7 @@ export default {
   },
   //emits валидация не работает, пока не разобрался в чем дело
   setup(props, { emit }) {
+    const emitter = inject("emitter");
     const refId = ref("");
     const refTitle = ref("");
     const refDescription = ref("");
@@ -43,7 +45,7 @@ export default {
 
     const onAddTask = () => {
       if (!refTitle.value || !refDescription.value) {
-        alert("Fill some info please!");
+        emitter.emit("toast", "Fill in all the fields!");
         return false;
       }
       emit("add", {
@@ -54,10 +56,6 @@ export default {
       });
       refTitle.value = "";
       refDescription.value = "";
-      removeParams("id");
-      removeParams("title");
-      removeParams("description");
-      removeParams("todo");
     };
 
     onMounted(() => {

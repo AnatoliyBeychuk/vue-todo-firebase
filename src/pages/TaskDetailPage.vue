@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import { ref, onMounted } from "vue";
 import { nanoid } from "nanoid";
 import { useRoute, useRouter } from "vue-router";
 import TaskInput from "../components/TaskInput.vue";
@@ -21,18 +22,24 @@ import {
   deleteTaskFromCollection,
 } from "../firebase/db-service";
 
+import { removeParams, loadParams } from "../utils/Utils";
+
 export default {
   components: { TaskInput },
   setup() {
     const notFulfilled = "not-fulfilled";
     const router = useRouter();
     const route = useRoute();
+    const refId = ref("");
+    const refTitle = ref("");
+    const refDescription = ref("");
+    const refTodo = ref("");
     const { id, title, description, todo } = route.params;
 
     //!!!! Спросить про location.state (React)(useLocation()) !!!!
 
     const addTask = async (task) => {
-      if (todo === "edit") {
+      if (refTodo.value === "edit") {
         const data = await getAllTaskInCollection(notFulfilled, "date", "desc");
         const doc = getTaskById(data, id);
         await deleteTaskFromCollection(notFulfilled, doc.id);
@@ -43,7 +50,18 @@ export default {
         id: taskId,
       });
       router.push("/todos");
+      removeParams("id");
+      removeParams("title");
+      removeParams("description");
+      removeParams("todo");
     };
+
+    onMounted(() => {
+      loadParams("id", refId);
+      loadParams("title", refTitle);
+      loadParams("description", refDescription);
+      loadParams("todo", refTodo);
+    });
 
     return { id, title, description, todo, addTask };
   },

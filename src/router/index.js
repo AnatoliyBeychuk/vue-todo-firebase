@@ -61,7 +61,9 @@ router.beforeEach(async (to, from, next) => {
     if (await getCurrentUser()) {
       next();
     } else {
-      alert("You dont have access!");
+      alert(
+        "You dont have access!\nYou need to register or log in to your account!"
+      );
       next("/");
     }
   } else {

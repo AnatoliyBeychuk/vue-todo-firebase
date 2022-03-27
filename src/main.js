@@ -4,4 +4,7 @@ import "./index.css";
 // import { firestorePlugin } from "vuefire"; //Ошибка (работает без него)
 import router from "./router/";
 
-createApp(App).use(router).mount("#app");
+import mitt from "mitt";
+const emitter = mitt();
+
+createApp(App).use(router).provide("emitter", emitter).mount("#app");

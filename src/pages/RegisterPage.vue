@@ -56,11 +56,14 @@
 </template>
 
 <script>
+import { inject } from "vue";
 import { ref } from "vue";
 import { auth, provider } from "../firebase/db";
 import { useRouter } from "vue-router";
+
 export default {
   setup() {
+    const emitter = inject("emitter");
     const email = ref("");
     const password = ref("");
     const router = useRouter();
@@ -74,7 +77,8 @@ export default {
         })
         .catch((error) => {
           console.log(error.code);
-          alert(error.message);
+          // alert(error.message);
+          emitter.emit("toast", error.message);
         });
     };
     const signInWithGoogle = () => {
@@ -83,7 +87,9 @@ export default {
         .then((result) => {
           router.push("/todos");
         })
-        .catch((error) => {});
+        .catch((error) => {
+          emitter.emit("toast", error.message);
+        });
     };
 
     return { email, password, register, signInWithGoogle };
